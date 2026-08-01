@@ -1,13 +1,65 @@
-/* DataVista Styles */
+/* Reset */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f5f7fa;
-    color: #333;
+body{
+    font-family:Arial,sans-serif;
+    background:#0f172a;
+    color:white;
+}
+
+/* Header */
+
+header{
+    background:#1e293b;
+    padding:20px;
+    text-align:center;
+}
+
+header h1{
+    color:#38bdf8;
+}
+
+header p{
+    color:#cbd5e1;
+    margin-top:10px;
+}
+
+.hero{
+    padding:50px 20px;
+    text-align:center;
+}
+
+.hero h2{
+    font-size:34px;
+    margin-bottom:20px;
+}
+
+.hero p{
+    color:#94a3b8;
+    line-height:1.8;
+}
+
+button{
+
+margin-top:30px;
+
+padding:15px 30px;
+
+border:none;
+
+border-radius:8px;
+
+background:#38bdf8;
+
+color:white;
+
+font-size:18px;
+
+cursor:pointer;
+
 }
