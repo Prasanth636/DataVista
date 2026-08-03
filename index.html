@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>DataVista</title>
 
 <link rel="stylesheet" href="style.css">
@@ -17,19 +14,14 @@
 <nav>
 
 <div class="logo">
-
-📊 <span>DataVista</span>
-
+📊 DataVista
 </div>
 
 <ul>
 
 <li><a href="#">Home</a></li>
-
 <li><a href="#">Dashboard</a></li>
-
 <li><a href="#">Analytics</a></li>
-
 <li><a href="#">Reports</a></li>
 
 </ul>
@@ -41,14 +33,26 @@
 <h1>Analyze Data Like a Pro</h1>
 
 <p>
-Upload datasets, clean data, visualize trends and generate powerful insights.
+
+Upload datasets, clean data, visualize trends and generate powerful business insights.
+
 </p>
 
 <div class="buttons">
 
-<button class="primary">Upload Dataset</button>
+<input type="file" id="csvFile" accept=".csv" hidden>
 
-<button class="secondary">Open Dashboard</button>
+<button class="primary" onclick="document.getElementById('csvFile').click()">
+
+Upload Dataset
+
+</button>
+
+<button class="secondary">
+
+Dashboard
+
+</button>
 
 </div>
 
@@ -58,9 +62,9 @@ Upload datasets, clean data, visualize trends and generate powerful insights.
 
 <div class="card">
 
-<h2>📂 Upload Data</h2>
+<h2>📂 Upload</h2>
 
-<p>Import CSV and Excel files easily.</p>
+<p>Import CSV datasets.</p>
 
 </div>
 
@@ -68,7 +72,7 @@ Upload datasets, clean data, visualize trends and generate powerful insights.
 
 <h2>📊 Analyze</h2>
 
-<p>Generate statistics and business insights.</p>
+<p>Generate statistics instantly.</p>
 
 </div>
 
@@ -76,7 +80,7 @@ Upload datasets, clean data, visualize trends and generate powerful insights.
 
 <h2>📈 Visualize</h2>
 
-<p>Create interactive charts and dashboards.</p>
+<p>Create beautiful charts.</p>
 
 </div>
 
@@ -84,4 +88,59 @@ Upload datasets, clean data, visualize trends and generate powerful insights.
 
 <section class="dashboard">
 
-<h2>Dashboard
+<h2>Dashboard</h2>
+
+<div class="stats">
+
+<div class="stat">
+
+<h3 id="rows">0</h3>
+
+<p>Rows</p>
+
+</div>
+
+<div class="stat">
+
+<h3 id="columns">0</h3>
+
+<p>Columns</p>
+
+</div>
+
+<div class="stat">
+
+<h3 id="charts">0</h3>
+
+<p>Charts</p>
+
+</div>
+
+<div class="stat">
+
+<h3 id="reports">0</h3>
+
+<p>Reports</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="preview">
+
+<h2>Dataset Preview</h2>
+
+<div id="output">
+
+<p>No dataset uploaded.</p>
+
+</div>
+
+</section>
+
+<script src="script.js"></script>
+
+</body>
+</html>
