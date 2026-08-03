@@ -141,12 +141,13 @@ fileInput.addEventListener("change", function () {
 
                 }
 
-                chart = new Chart(ctx,{
+                const chartType = document.getElementById("chartType").value;
 
-                    type:"bar",
+chart = new Chart(ctx,{
 
-                    data:{
+    type: chartType,
 
+    data:{
                         labels:labels,
 
                         datasets:[{
