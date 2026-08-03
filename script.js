@@ -1,33 +1,69 @@
-const fileInput=document.getElementById("csvFile");
+const fileInput = document.getElementById("csvFile");
+const preview = document.getElementById("preview");
 
-const output=document.getElementById("output");
+fileInput.addEventListener("change", function () {
 
-fileInput.addEventListener("change",function(){
+const file = this.files[0];
 
-const file=this.files[0];
+if (!file) return;
 
-if(file){
+Papa.parse(file, {
 
-document.getElementById("rows").innerHTML="?";
+header: true,
+skipEmptyLines: true,
 
-document.getElementById("columns").innerHTML="?";
+complete: function (results) {
 
-output.innerHTML=`
+const data = results.data;
+const headers = results.meta.fields;
 
+document.getElementById("rows").innerHTML = data.length;
+document.getElementById("columns").innerHTML = headers.length;
+document.getElementById("charts").innerHTML = "3";
+document.getElementById("reports").innerHTML = "1";
+
+let html = `
 <h3>✅ ${file.name}</h3>
 
-<br>
+<p>Total Rows : ${data.length}</p>
 
-<p>Size : ${(file.size/1024).toFixed(2)} KB</p>
+<p>Total Columns : ${headers.length}</p>
 
-<br>
+<table>
 
-<p>Status : Uploaded Successfully</p>
+<thead>
 
-<p style="margin-top:10px;">CSV preview will be available in Version 4.0</p>
-
+<tr>
 `;
 
+headers.forEach(h => {
+
+html += `<th>${h}</th>`;
+
+});
+
+html += "</tr></thead><tbody>";
+
+data.slice(0,10).forEach(row=>{
+
+html+="<tr>";
+
+headers.forEach(h=>{
+
+html+=`<td>${row[h] ?? ""}</td>`;
+
+});
+
+html+="</tr>";
+
+});
+
+html += "</tbody></table>";
+
+preview.innerHTML = html;
+
 }
+
+});
 
 });
