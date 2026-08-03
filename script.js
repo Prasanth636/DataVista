@@ -1,5 +1,6 @@
 const fileInput = document.getElementById("csvFile");
 const preview = document.getElementById("preview");
+const chartColumn = document.getElementById("chartColumn");
 const chartType = document.getElementById("chartType");
 
 let chart = null;
