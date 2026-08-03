@@ -1,56 +1,75 @@
 const fileInput = document.getElementById("csvFile");
 const preview = document.getElementById("preview");
 
-fileInput.addEventListener("change", function () {
+const rows = document.getElementById("rows");
+const columns = document.getElementById("columns");
+const charts = document.getElementById("charts");
+const reports = document.getElementById("reports");
 
-const file = this.files[0];
+if(fileInput){
 
-if (!file) return;
+fileInput.addEventListener("change",function(){
 
-Papa.parse(file, {
+const file=this.files[0];
 
-header: true,
-skipEmptyLines: true,
+if(!file) return;
 
-complete: function (results) {
+Papa.parse(file,{
 
-const data = results.data;
-const headers = results.meta.fields;
+header:true,
 
-document.getElementById("rows").innerHTML = data.length;
-document.getElementById("columns").innerHTML = headers.length;
-document.getElementById("charts").innerHTML = "3";
-document.getElementById("reports").innerHTML = "1";
+skipEmptyLines:true,
 
-let html = `
+complete:function(results){
+
+const data=results.data;
+
+const headers=results.meta.fields || [];
+
+rows.textContent=data.length;
+columns.textContent=headers.length;
+charts.textContent="3";
+reports.textContent="1";
+
+let html=`
+
 <h3>✅ ${file.name}</h3>
 
-<p>Total Rows : ${data.length}</p>
+<p><strong>Total Rows:</strong> ${data.length}</p>
 
-<p>Total Columns : ${headers.length}</p>
+<p><strong>Total Columns:</strong> ${headers.length}</p>
 
 <table>
 
 <thead>
 
 <tr>
+
 `;
 
-headers.forEach(h => {
+headers.forEach(header=>{
 
-html += `<th>${h}</th>`;
+html+=`<th>${header}</th>`;
 
 });
 
-html += "</tr></thead><tbody>";
+html+=`
+
+</tr>
+
+</thead>
+
+<tbody>
+
+`;
 
 data.slice(0,10).forEach(row=>{
 
 html+="<tr>";
 
-headers.forEach(h=>{
+headers.forEach(header=>{
 
-html+=`<td>${row[h] ?? ""}</td>`;
+html+=`<td>${row[header] || ""}</td>`;
 
 });
 
@@ -58,12 +77,26 @@ html+="</tr>";
 
 });
 
-html += "</tbody></table>";
+html+=`
 
-preview.innerHTML = html;
+</tbody>
+
+</table>
+
+`;
+
+preview.innerHTML=html;
+
+},
+
+error:function(){
+
+preview.innerHTML="<h2>❌ Unable to read CSV file.</h2>";
 
 }
 
 });
 
 });
+
+}
