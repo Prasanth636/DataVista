@@ -134,6 +134,60 @@ fileInput.addEventListener("change", function () {
                 const values = numbers.slice(0,10);
 
                 const ctx = document.getElementById("barChart");
+document.getElementById("chartType").onchange = function () {
+
+    if(chart){
+
+        chart.destroy();
+
+    }
+
+    chart = new Chart(ctx,{
+
+        type:this.value,
+
+        data:{
+
+            labels:labels,
+
+            datasets:[{
+
+                label:column,
+
+                data:values,
+
+                backgroundColor:[
+                    "#0ea5e9",
+                    "#38bdf8",
+                    "#06b6d4",
+                    "#14b8a6",
+                    "#22c55e",
+                    "#84cc16",
+                    "#eab308",
+                    "#f97316",
+                    "#ef4444",
+                    "#8b5cf6"
+                ],
+
+                borderColor:"#ffffff",
+
+                borderWidth:1
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            maintainAspectRatio:false
+
+        }
+
+    });
+
+};
 
                 if(chart){
 
