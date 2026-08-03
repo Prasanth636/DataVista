@@ -20,20 +20,25 @@
 </div>
 
 <ul>
-<li><a href="#">Home</a></li>
-<li><a href="#">Dashboard</a></li>
-<li><a href="#">Analytics</a></li>
-<li><a href="#">Reports</a></li>
+
+<li><a href="#home">Home</a></li>
+<li><a href="#dashboard">Dashboard</a></li>
+<li><a href="#analytics">Analytics</a></li>
+<li><a href="#reports">Reports</a></li>
+<li><a href="#about">About</a></li>
+
 </ul>
 
 </nav>
 
-<section class="hero">
+<section class="hero" id="home">
 
 <h1>Analyze Data Like a Pro</h1>
 
 <p>
+
 Upload CSV files, analyze data, create charts and generate reports.
+
 </p>
 
 <div class="buttons">
@@ -52,7 +57,9 @@ Upload Dataset
 
 </button>
 
-<button class="secondary">
+<button
+class="secondary"
+onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">
 
 Dashboard
 
@@ -68,7 +75,7 @@ Dashboard
 
 <h2>📂 Upload</h2>
 
-<p>Import CSV datasets instantly.</p>
+<p>Upload CSV datasets instantly.</p>
 
 </div>
 
@@ -76,7 +83,7 @@ Dashboard
 
 <h2>📊 Analyze</h2>
 
-<p>Generate statistics automatically.</p>
+<p>Analyze data with statistics and KPIs.</p>
 
 </div>
 
@@ -84,13 +91,13 @@ Dashboard
 
 <h2>📈 Visualize</h2>
 
-<p>Create interactive charts.</p>
+<p>Create interactive charts and dashboards.</p>
 
 </div>
 
 </section>
 
-<section class="dashboard">
+<section class="dashboard" id="dashboard">
 
 <h2>Dashboard Overview</h2>
 
@@ -129,6 +136,64 @@ Dashboard
 <p>No dataset uploaded.</p>
 
 </div>
+
+</section>
+
+<section class="dashboard" id="analytics">
+
+<h2>Analytics</h2>
+
+<div class="stats">
+
+<div class="stat">
+<h3>Mean</h3>
+<p>Coming Soon</p>
+</div>
+
+<div class="stat">
+<h3>Median</h3>
+<p>Coming Soon</p>
+</div>
+
+<div class="stat">
+<h3>Mode</h3>
+<p>Coming Soon</p>
+</div>
+
+<div class="stat">
+<h3>Charts</h3>
+<p>Coming Soon</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="dashboard" id="reports">
+
+<h2>Reports</h2>
+
+<div class="stat">
+
+<h3>Report Generator</h3>
+
+<p>Download CSV reports and charts (Coming Soon)</p>
+
+</div>
+
+</section>
+
+<section class="dashboard" id="about">
+
+<h2>About DataVista AI</h2>
+
+<p style="text-align:center;max-width:800px;margin:auto;line-height:1.8;">
+
+DataVista AI is a web-based data analytics platform developed as a student project.
+It enables users to upload CSV datasets, preview data, analyze key metrics,
+visualize insights, and generate reports through an interactive dashboard.
+
+</p>
 
 </section>
 
