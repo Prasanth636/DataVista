@@ -16,13 +16,14 @@
 <nav>
 
 <div class="logo">
-📈 DataVista AI
+📊 DataVista AI
 </div>
 
 <ul>
 
 <li><a href="#home">Home</a></li>
 <li><a href="#dashboard">Dashboard</a></li>
+<li><a href="#visualization">Visualization</a></li>
 <li><a href="#analytics">Analytics</a></li>
 <li><a href="#reports">Reports</a></li>
 <li><a href="#about">About</a></li>
@@ -146,10 +147,12 @@ Dashboard
 
 <div style="text-align:center; margin-bottom:20px;">
 
-<select id="chartColumn">
+<label for="chartColumn" class="visually-hidden">Select chart column</label>
+<select id="chartColumn" aria-label="Select chart column">
 </select>
 
-<select id="chartType">
+<label for="chartType" class="visually-hidden">Select chart type</label>
+<select id="chartType" aria-label="Select chart type">
 
 <option value="bar">Bar Chart</option>
 <option value="line">Line Chart</option>
