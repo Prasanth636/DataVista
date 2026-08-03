@@ -1,172 +1,291 @@
-const fileInput = document.getElementById("csvFile");
-const preview = document.getElementById("preview");
-
-let chart;
-
-fileInput.addEventListener("change", function () {
-
-    const file = this.files[0];
-
-    if (!file) return;
-
-    Papa.parse(file, {
-
-        header: true,
-        skipEmptyLines: true,
-
-        complete: function (results) {
-
-            const data = results.data;
-            const headers = results.meta.fields;
-
-            document.getElementById("rows").textContent = data.length;
-            document.getElementById("columns").textContent = headers.length;
-            document.getElementById("charts").textContent = "1";
-            document.getElementById("reports").textContent = "1";
-
-            // Preview Table
-            let html = `
-            <h3>✅ ${file.name}</h3>
-
-            <p><strong>Rows:</strong> ${data.length}</p>
-
-            <p><strong>Columns:</strong> ${headers.length}</p>
-
-            <table>
-            <thead>
-            <tr>`;
-
-            headers.forEach(h => {
-
-                html += `<th>${h}</th>`;
-
-            });
-
-            html += `</tr></thead><tbody>`;
-
-            data.slice(0,10).forEach(row=>{
-
-                html += "<tr>";
-
-                headers.forEach(h=>{
-
-                    html += `<td>${row[h] ?? ""}</td>`;
-
-                });
-
-                html += "</tr>";
-
-            });
-
-            html += "</tbody></table>";
-
-            preview.innerHTML = html;
-
-            // ---------- Analytics ----------
-
-            let numericColumn = headers.find(h => {
-
-                return !isNaN(parseFloat(data[0][h]));
-
-            });
-
-            if(numericColumn){
-
-                let numbers = data
-                .map(r=>parseFloat(r[numericColumn]))
-                .filter(n=>!isNaN(n));
-
-                numbers.sort((a,b)=>a-b);
-
-                let mean =
-                numbers.reduce((a,b)=>a+b,0)/numbers.length;
-
-                let median =
-                numbers.length%2===0
-                ?
-                (
-                    numbers[numbers.length/2-1]+
-                    numbers[numbers.length/2]
-                )/2
-                :
-                numbers[Math.floor(numbers.length/2)];
-
-                document.getElementById("mean").textContent =
-                mean.toFixed(2);
-
-                document.getElementById("median").textContent =
-                median.toFixed(2);
-
-                document.getElementById("numericColumns").textContent =
-                headers.filter(h=>!isNaN(parseFloat(data[0][h]))).length;
-
-                let missing=0;
-
-                data.forEach(r=>{
-
-                    headers.forEach(h=>{
-
-                        if(r[h]==="" || r[h]==null){
-
-                            missing++;
-
-                        }
-
-                    });
-
-                });
-
-                document.getElementById("missingValues").textContent =
-                missing;
-
-                // ---------- Chart ----------
-
-                const labels =
-                data.slice(0,10).map((_,i)=>"Row "+(i+1));
-
-                const values =
-                numbers.slice(0,10);
-
-                const ctx =
-                document.getElementById("barChart");
-
-                if(chart){
-
-                    chart.destroy();
-
-                }
-
-                chart =
-                new Chart(ctx,{
-
-                    type:"bar",
-
-                    data:{
-
-                        labels:labels,
-
-                        datasets:[{
-
-                            label:numericColumn,
-
-                            data:values
-
-                        }]
-
-                    },
-
-                    options:{
-
-                        responsive:true
-
-                    }
-
-                });
-
-            }
-
-        }
-
-    });
-
-});
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+background:#0f172a;
+color:#fff;
+}
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 8%;
+background:#111827;
+position:sticky;
+top:0;
+z-index:100;
+box-shadow:0 4px 10px rgba(0,0,0,.3);
+}
+
+.logo{
+font-size:28px;
+font-weight:700;
+color:#38bdf8;
+}
+
+nav ul{
+display:flex;
+list-style:none;
+gap:25px;
+}
+
+nav ul li a{
+color:#fff;
+text-decoration:none;
+font-weight:500;
+transition:.3s;
+}
+
+nav ul li a:hover{
+color:#38bdf8;
+}
+
+.hero{
+padding:90px 20px;
+text-align:center;
+}
+
+.hero h1{
+font-size:52px;
+margin-bottom:20px;
+}
+
+.hero p{
+max-width:700px;
+margin:auto;
+line-height:1.8;
+color:#cbd5e1;
+}
+
+.buttons{
+margin-top:40px;
+}
+
+button{
+padding:15px 30px;
+margin:10px;
+border:none;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+transform:translateY(-5px);
+}
+
+.primary{
+background:#0ea5e9;
+color:white;
+}
+
+.secondary{
+background:transparent;
+color:#0ea5e9;
+border:2px solid #0ea5e9;
+}
+
+.features{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:25px;
+padding:60px 8%;
+}
+
+.card{
+background:#1e293b;
+padding:30px;
+border-radius:15px;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,.3);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.card h2{
+margin-bottom:15px;
+color:#38bdf8;
+}
+
+.card p{
+color:#cbd5e1;
+}
+
+.dashboard{
+padding:60px 8%;
+}
+
+.dashboard h2{
+text-align:center;
+margin-bottom:35px;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+}
+
+.stat{
+background:#1e293b;
+padding:30px;
+border-radius:15px;
+text-align:center;
+box-shadow:0 10px 20px rgba(0,0,0,.25);
+transition:.3s;
+}
+
+.stat:hover{
+transform:translateY(-6px);
+}
+
+.stat h3{
+font-size:40px;
+color:#38bdf8;
+margin-bottom:10px;
+}
+
+.preview{
+padding:60px 8%;
+}
+
+.preview h2{
+text-align:center;
+margin-bottom:25px;
+}
+
+#preview{
+background:#1e293b;
+padding:20px;
+border-radius:15px;
+overflow:auto;
+min-height:200px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th{
+background:#0ea5e9;
+padding:12px;
+color:white;
+}
+
+td{
+padding:12px;
+border:1px solid #334155;
+}
+
+tr:nth-child(even){
+background:#162033;
+}
+
+tr:hover{
+background:#243447;
+}
+
+#visualization{
+padding:60px 8%;
+}
+
+#visualization .card{
+height:450px;
+}
+
+#barChart{
+width:100% !important;
+height:380px !important;
+background:white;
+border-radius:10px;
+padding:10px;
+}
+
+#about p{
+color:#cbd5e1;
+font-size:17px;
+}
+
+footer{
+text-align:center;
+padding:30px;
+margin-top:40px;
+color:#94a3b8;
+border-top:1px solid #334155;
+}
+
+@media(max-width:992px){
+
+.features{
+grid-template-columns:repeat(2,1fr);
+}
+
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media(max-width:768px){
+
+nav{
+flex-direction:column;
+}
+
+nav ul{
+margin-top:15px;
+flex-wrap:wrap;
+justify-content:center;
+gap:15px;
+}
+
+.logo{
+font-size:24px;
+}
+
+.hero h1{
+font-size:36px;
+}
+
+.hero p{
+font-size:15px;
+}
+
+.features{
+grid-template-columns:1fr;
+}
+
+.stats{
+grid-template-columns:1fr;
+}
+
+button{
+width:90%;
+}
+
+#visualization .card{
+height:320px;
+}
+
+#barChart{
+height:280px !important;
+}
+
+}
