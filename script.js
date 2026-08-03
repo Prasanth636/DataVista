@@ -1,7 +1,11 @@
 const fileInput = document.getElementById("csvFile");
 const preview = document.getElementById("preview");
+const chartType = document.getElementById("chartType");
 
-let chart;
+let chart = null;
+let labels = [];
+let values = [];
+let chartColumn = "";
 
 fileInput.addEventListener("change", function () {
 
@@ -21,45 +25,33 @@ fileInput.addEventListener("change", function () {
 
             document.getElementById("rows").textContent = data.length;
             document.getElementById("columns").textContent = headers.length;
-            document.getElementById("charts").textContent = "1";
             document.getElementById("reports").textContent = "1";
 
             let html = `
             <h3>✅ ${file.name}</h3>
-
             <p><strong>Total Rows:</strong> ${data.length}</p>
-
             <p><strong>Total Columns:</strong> ${headers.length}</p>
 
             <table>
-
             <thead>
-
             <tr>
             `;
 
-            headers.forEach(header => {
+            headers.forEach(h => {
 
-                html += `<th>${header}</th>`;
+                html += `<th>${h}</th>`;
 
             });
 
-            html += `
+            html += `</tr></thead><tbody>`;
 
-            </tr>
-
-            </thead>
-
-            <tbody>
-            `;
-
-            data.slice(0,10).forEach(row => {
+            data.slice(0,10).forEach(row=>{
 
                 html += "<tr>";
 
-                headers.forEach(header => {
+                headers.forEach(h=>{
 
-                    html += `<td>${row[header] || ""}</td>`;
+                    html += `<td>${row[h] ?? ""}</td>`;
 
                 });
 
@@ -67,30 +59,26 @@ fileInput.addEventListener("change", function () {
 
             });
 
-            html += `
-            </tbody>
-            </table>
-            `;
+            html += "</tbody></table>";
 
             preview.innerHTML = html;
 
-            // ---------- Analytics ----------
+            const numericHeaders = headers.filter(h=>{
 
-            let numericHeaders = headers.filter(header => {
-
-                return data.some(row => !isNaN(parseFloat(row[header])));
+                return data.some(r=>!isNaN(parseFloat(r[h])));
 
             });
 
-            document.getElementById("numericColumns").textContent = numericHeaders.length;
+            document.getElementById("numericColumns").textContent =
+            numericHeaders.length;
 
             let missing = 0;
 
-            data.forEach(row => {
+            data.forEach(row=>{
 
-                headers.forEach(header => {
+                headers.forEach(h=>{
 
-                    if (row[header] === "" || row[header] == null) {
+                    if(row[h]==="" || row[h]==null){
 
                         missing++;
 
@@ -100,41 +88,63 @@ fileInput.addEventListener("change", function () {
 
             });
 
-            document.getElementById("missingValues").textContent = missing;
+            document.getElementById("missingValues").textContent =
+            missing;
 
-            if (numericHeaders.length > 0) {
+            if(numericHeaders.length===0){
 
-                const column = numericHeaders[0];
+                return;
 
-                let numbers = data
-                    .map(row => parseFloat(row[column]))
-                    .filter(value => !isNaN(value));
+            }
 
-                let mean = numbers.reduce((a,b)=>a+b,0) / numbers.length;
+            chartColumn = numericHeaders[0];
 
-                let sorted = [...numbers].sort((a,b)=>a-b);
+            values = data
+            .map(r=>parseFloat(r[chartColumn]))
+            .filter(v=>!isNaN(v));
 
-                let median;
+            labels = data
+            .slice(0,10)
+            .map((r,i)=>"Row "+(i+1));
 
-                if(sorted.length % 2 === 0){
+            const mean =
+            values.reduce((a,b)=>a+b,0)/values.length;
 
-                    median = (sorted[sorted.length/2-1] + sorted[sorted.length/2]) / 2;
+            const sorted=[...values].sort((a,b)=>a-b);
 
-                }else{
+            let median;
 
-                    median = sorted[Math.floor(sorted.length/2)];
+            if(sorted.length%2===0){
 
-                }
+                median=
+                (
+                sorted[sorted.length/2-1]+
+                sorted[sorted.length/2]
+                )/2;
 
-                document.getElementById("mean").textContent = mean.toFixed(2);
-                document.getElementById("median").textContent = median.toFixed(2);
+            }else{
 
-                const labels = data.slice(0,10).map((row,index)=>"Row "+(index+1));
+                median=
+                sorted[Math.floor(sorted.length/2)];
 
-                const values = numbers.slice(0,10);
+            }
 
-                const ctx = document.getElementById("barChart");
-document.getElementById("chartType").onchange = function () {
+            document.getElementById("mean").textContent=
+            mean.toFixed(2);
+
+            document.getElementById("median").textContent=
+            median.toFixed(2);
+
+            createChart();
+
+        }
+
+    });
+
+});
+function createChart(){
+
+    const ctx = document.getElementById("barChart");
 
     if(chart){
 
@@ -144,19 +154,21 @@ document.getElementById("chartType").onchange = function () {
 
     chart = new Chart(ctx,{
 
-        type:this.value,
+        type: chartType.value === "pie" ? "pie" :
+      chartType.value === "line" ? "line" : "bar",
 
         data:{
 
-            labels:labels,
+            labels: labels,
 
             datasets:[{
 
-                label:column,
+                label: chartColumn,
 
-                data:values,
+                data: values.slice(0,10),
 
                 backgroundColor:[
+
                     "#0ea5e9",
                     "#38bdf8",
                     "#06b6d4",
@@ -167,11 +179,16 @@ document.getElementById("chartType").onchange = function () {
                     "#f97316",
                     "#ef4444",
                     "#8b5cf6"
+
                 ],
 
                 borderColor:"#ffffff",
 
-                borderWidth:1
+                borderWidth:1,
+
+                fill:false,
+
+                tension:0.3
 
             }]
 
@@ -181,75 +198,82 @@ document.getElementById("chartType").onchange = function () {
 
             responsive:true,
 
-            maintainAspectRatio:false
+            maintainAspectRatio:false,
 
-        }
+            plugins:{
 
-    });
+                legend:{
 
-};
-
-                if(chart){
-
-                    chart.destroy();
+                    display:true
 
                 }
 
-                const chartType = document.getElementById("chartType").value;
+            },
 
-chart = new Chart(ctx,{
+            scales:{
 
-    type: chartType,
+                y:{
 
-    data:{
-                        labels:labels,
+                    beginAtZero:true
 
-                        datasets:[{
-
-                            label:column,
-
-                            data:values,
-
-                            backgroundColor:"#0ea5e9",
-
-                            borderColor:"#38bdf8",
-
-                            borderWidth:1
-
-                        }]
-
-                    },
-
-                    options:{
-
-                        responsive:true,
-
-                        maintainAspectRatio:false,
-
-                        scales:{
-
-                            y:{
-
-                                beginAtZero:true
-
-                            }
-
-                        }
-
-                    }
-
-                });
+                }
 
             }
-
-        },
-
-        error:function(){
-
-            preview.innerHTML = "<h2>❌ Unable to read CSV file.</h2>";
 
         }
 
     });
 
+    document.getElementById("charts").textContent="1";
+
+}
+
+chartType.addEventListener("change",function(){
+
+    if(values.length===0){
+
+        return;
+
+    }
+
+    createChart();
+
 });
+// ---------- Helper Functions ----------
+
+function resetDashboard(){
+
+    document.getElementById("rows").textContent="0";
+    document.getElementById("columns").textContent="0";
+    document.getElementById("charts").textContent="0";
+    document.getElementById("reports").textContent="0";
+
+    document.getElementById("mean").textContent="0";
+    document.getElementById("median").textContent="0";
+    document.getElementById("numericColumns").textContent="0";
+    document.getElementById("missingValues").textContent="0";
+
+    preview.innerHTML="<p>No dataset uploaded.</p>";
+
+    if(chart){
+
+        chart.destroy();
+        chart=null;
+
+    }
+
+}
+
+window.addEventListener("load",function(){
+
+    resetDashboard();
+
+});
+
+fileInput.addEventListener("click",function(){
+
+    this.value="";
+
+});
+
+console.log("✅ DataVista AI Loaded Successfully");
