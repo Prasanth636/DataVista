@@ -3,234 +3,239 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DataVista AI</title>
+<title>DataVista AI — Analytics Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 
 <body>
 
-<nav>
-
-<div class="logo">
-📊 DataVista AI
+<!-- Loading overlay shown while parsing CSV -->
+<div id="loadingOverlay" class="loading-overlay hidden" role="status" aria-live="polite">
+  <div class="spinner"></div>
+  <p id="loadingText">Parsing dataset…</p>
 </div>
 
-<ul>
+<!-- Toast notifications for errors / success messages -->
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-<li><a href="#home">Home</a></li>
-<li><a href="#dashboard">Dashboard</a></li>
-<li><a href="#visualization">Visualization</a></li>
-<li><a href="#analytics">Analytics</a></li>
-<li><a href="#reports">Reports</a></li>
-<li><a href="#about">About</a></li>
+<nav>
+  <div class="logo">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8 12 14.7l-3.5-3.5L3 16.7"/></svg>
+    DataVista AI
+  </div>
 
-</ul>
+  <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#dashboard">Dashboard</a></li>
+    <li><a href="#data">Data</a></li>
+    <li><a href="#visualization">Visualization</a></li>
+    <li><a href="#analytics">Analytics</a></li>
+    <li><a href="#reports">Reports</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
 
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle light and dark theme" title="Toggle theme">
+    <svg id="iconSun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    <svg id="iconMoon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+  </button>
 </nav>
 
 <section class="hero" id="home">
+  <div class="hero-bars" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
 
-<h1>Analyze Data Like a Pro</h1>
+  <h1>Analyze Data Like a Pro</h1>
+  <p>Upload a CSV, and DataVista AI instantly builds your dashboard — statistics, filters, charts and a written summary, entirely in your browser.</p>
 
-<p>
+  <div class="buttons">
+    <input type="file" id="csvFile" accept=".csv" hidden>
+    <button class="primary" id="uploadBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload Dataset
+    </button>
+    <button class="secondary" id="scrollDashboardBtn">Explore Dashboard</button>
+  </div>
 
-Upload CSV files, analyze data, create charts and generate reports.
-
-</p>
-
-<div class="buttons">
-
-<input
-type="file"
-id="csvFile"
-accept=".csv"
-hidden>
-
-<button
-class="primary"
-onclick="document.getElementById('csvFile').click()">
-
-Upload Dataset
-
-</button>
-
-<button
-class="secondary"
-onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">
-
-Dashboard
-
-</button>
-
-</div>
-
+  <p id="fileNameLabel" class="file-name-label"></p>
 </section>
 
 <section class="features">
-
-<div class="card">
-
-<h2>📂 Upload</h2>
-
-<p>Upload CSV datasets instantly.</p>
-
-</div>
-
-<div class="card">
-
-<h2>📊 Analyze</h2>
-
-<p>Analyze data with statistics and KPIs.</p>
-
-</div>
-
-<div class="card">
-
-<h2>📈 Visualize</h2>
-
-<p>Create interactive charts and dashboards.</p>
-
-</div>
-
+  <div class="card">
+    <h2>📂 Upload</h2>
+    <p>Drop in any CSV — DataVista AI detects numeric, categorical and date columns automatically.</p>
+  </div>
+  <div class="card">
+    <h2>📊 Analyze</h2>
+    <p>Thirteen live statistics, from mean and mode to standard deviation and variance.</p>
+  </div>
+  <div class="card">
+    <h2>📈 Visualize</h2>
+    <p>Seven chart types with instant switching — no re-upload, no page reload.</p>
+  </div>
 </section>
 
 <section class="dashboard" id="dashboard">
+  <h2>Dashboard Overview</h2>
 
-<h2>Dashboard Overview</h2>
+  <div class="stats" id="overviewStats">
+    <div class="stat accent-cyan"><h3 id="rows">0</h3><p>Rows</p></div>
+    <div class="stat accent-violet"><h3 id="columns">0</h3><p>Columns</p></div>
+    <div class="stat accent-amber"><h3 id="charts">0</h3><p>Charts</p></div>
+    <div class="stat accent-rose"><h3 id="reports">0</h3><p>Reports</p></div>
+  </div>
 
-<div class="stats">
-
-<div class="stat">
-<h3 id="rows">0</h3>
-<p>Rows</p>
-</div>
-
-<div class="stat">
-<h3 id="columns">0</h3>
-<p>Columns</p>
-</div>
-
-<div class="stat">
-<h3 id="charts">0</h3>
-<p>Charts</p>
-</div>
-
-<div class="stat">
-<h3 id="reports">0</h3>
-<p>Reports</p>
-</div>
-
-</div>
-
+  <div class="card ai-summary-card">
+    <h3 class="ai-summary-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+      AI Insights
+    </h3>
+    <p id="aiSummaryText">Upload a dataset to generate an automatic summary of your data.</p>
+  </div>
 </section>
 
-<section class="preview">
+<section class="data-section" id="data">
+  <h2>Dataset Preview</h2>
 
-<h2>Dataset Preview</h2>
+  <div class="toolbar">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="tableSearch" placeholder="Search dataset…" disabled>
+    </div>
 
-<div id="preview">
+    <div class="rows-per-page">
+      <label for="rowsPerPage">Rows per page</label>
+      <select id="rowsPerPage" disabled>
+        <option value="10">10</option>
+        <option value="25" selected>25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+    </div>
 
-<p>No dataset uploaded.</p>
+    <button class="ghost-btn" id="downloadCsvBtn" disabled>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download CSV
+    </button>
+  </div>
 
-</div>
+  <div id="filterContainer" class="filter-container"></div>
 
+  <div id="previewTableWrapper" class="table-wrapper">
+    <p id="previewEmptyState" class="empty-state">No dataset uploaded yet. Upload a CSV to see a live preview here.</p>
+    <table id="dataTable" class="hidden">
+      <thead><tr id="tableHeadRow"></tr></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div id="pagination" class="pagination hidden">
+    <button id="prevPageBtn" class="ghost-btn">Prev</button>
+    <span id="pageInfo">Page 1 of 1</span>
+    <button id="nextPageBtn" class="ghost-btn">Next</button>
+  </div>
 </section>
+
 <section class="dashboard" id="visualization">
+  <h2>Data Visualization</h2>
 
-<h2>Data Visualization</h2>
+  <div class="card chart-card">
+    <div class="chart-controls">
+      <div class="control-group">
+        <label for="labelColumn">X Axis / Label</label>
+        <select id="labelColumn" disabled></select>
+      </div>
 
-<div class="card">
+      <div class="control-group">
+        <label for="chartColumn">Value Column</label>
+        <select id="chartColumn" disabled></select>
+      </div>
 
-<div style="text-align:center; margin-bottom:20px;">
+      <div class="control-group">
+        <label for="chartType">Chart Type</label>
+        <select id="chartType" disabled>
+          <option value="bar">Bar Chart</option>
+          <option value="horizontalBar">Horizontal Bar</option>
+          <option value="line">Line Chart</option>
+          <option value="pie">Pie Chart</option>
+          <option value="doughnut">Doughnut Chart</option>
+          <option value="radar">Radar Chart</option>
+          <option value="scatter">Scatter Chart</option>
+        </select>
+      </div>
 
-<label for="chartColumn" class="visually-hidden">Select chart column</label>
-<select id="chartColumn" aria-label="Select chart column">
-</select>
+      <button class="ghost-btn" id="downloadChartBtn" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG
+      </button>
+    </div>
 
-<label for="chartType" class="visually-hidden">Select chart type</label>
-<select id="chartType" aria-label="Select chart type">
+    <p id="chartSampleNote" class="sample-note hidden"></p>
 
-<option value="bar">Bar Chart</option>
-<option value="line">Line Chart</option>
-<option value="pie">Pie Chart</option>
-<option value="doughnut">Doughnut Chart</option>
-
-</select>
-
-</div>
-
-<canvas id="barChart"></canvas>
-
-</div>
-
+    <div class="chart-canvas-wrapper">
+      <canvas id="barChart"></canvas>
+      <p id="chartEmptyState" class="empty-state">Upload a dataset with at least one numeric column to see a chart.</p>
+    </div>
+  </div>
 </section>
 
 <section class="dashboard" id="analytics">
+  <h2>Analytics</h2>
+  <p class="section-subtitle">Statistics below apply to the selected Value Column, unless noted.</p>
 
-<h2>Analytics</h2>
-
-<div class="stats">
-
-<div class="stat">
-<h3 id="mean">0</h3>
-<p>Mean</p>
-</div>
-
-<div class="stat">
-<h3 id="median">0</h3>
-<p>Median</p>
-</div>
-
-<div class="stat">
-<h3 id="numericColumns">0</h3>
-<p>Numeric Columns</p>
-</div>
-
-<div class="stat">
-<h3 id="missingValues">0</h3>
-<p>Missing Values</p>
-</div>
-
-</div>
-
+  <div class="stats stats-grid-13">
+    <div class="stat accent-cyan"><h3 id="mean">0</h3><p>Mean</p></div>
+    <div class="stat accent-violet"><h3 id="median">0</h3><p>Median</p></div>
+    <div class="stat accent-amber"><h3 id="mode">0</h3><p>Mode</p></div>
+    <div class="stat accent-rose"><h3 id="min">0</h3><p>Minimum</p></div>
+    <div class="stat accent-cyan"><h3 id="max">0</h3><p>Maximum</p></div>
+    <div class="stat accent-violet"><h3 id="range">0</h3><p>Range</p></div>
+    <div class="stat accent-amber"><h3 id="sum">0</h3><p>Sum</p></div>
+    <div class="stat accent-rose"><h3 id="average">0</h3><p>Average</p></div>
+    <div class="stat accent-cyan"><h3 id="stddev">0</h3><p>Std. Deviation</p></div>
+    <div class="stat accent-violet"><h3 id="variance">0</h3><p>Variance</p></div>
+    <div class="stat accent-amber"><h3 id="numericColumns">0</h3><p>Numeric Columns</p></div>
+    <div class="stat accent-rose"><h3 id="missingValues">0</h3><p>Missing Values</p></div>
+    <div class="stat accent-cyan"><h3 id="uniqueValues">0</h3><p>Unique Values</p></div>
+  </div>
 </section>
 
 <section class="dashboard" id="reports">
+  <h2>Reports</h2>
 
-<h2>Reports</h2>
+  <div class="card reports-card">
+    <h3>Report Generator</h3>
+    <p>Export your dataset, chart, or a full analytics report — generated entirely in your browser.</p>
 
-<div class="stat">
-
-<h3>Report Generator</h3>
-
-<p>Download CSV reports and charts (Coming Soon)</p>
-
-</div>
-
+    <div class="report-buttons">
+      <button class="primary" id="downloadCsvBtn2" disabled>Download CSV</button>
+      <button class="primary" id="downloadChartBtn2" disabled>Download Chart PNG</button>
+      <button class="primary" id="downloadPdfBtn" disabled>Download PDF Report</button>
+    </div>
+  </div>
 </section>
 
 <section class="dashboard" id="about">
-
-<h2>About DataVista AI</h2>
-
-<p style="text-align:center;max-width:800px;margin:auto;line-height:1.8;">
-
-DataVista AI is a web-based data analytics platform developed as a student project.
-It enables users to upload CSV datasets, preview data, analyze key metrics,
-visualize insights, and generate reports through an interactive dashboard.
-
-</p>
-
+  <h2>About DataVista AI</h2>
+  <p style="text-align:center;max-width:800px;margin:auto;line-height:1.8;">
+    DataVista AI is a fully client-side data analytics platform. Upload a CSV and it detects
+    numeric, categorical and date columns, computes thirteen live statistics, builds interactive
+    charts, and writes a plain-language summary of your dataset — all without a backend server,
+    so it runs entirely from a static host like GitHub Pages.
+  </p>
 </section>
 
 <footer>
-
-<p>© 2026 DataVista AI | Built by Prasanth</p>
-
+  <p>© 2026 DataVista AI | Built by Prasanth</p>
 </footer>
 
 <script src="script.js"></script>
