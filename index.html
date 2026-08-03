@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DataVista</title>
+<title>DataVista AI</title>
 
 <link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 </head>
 
@@ -15,7 +17,7 @@
 
 <div class="logo">
 
-📊 DataVista
+📊 DataVista AI
 
 </div>
 
@@ -36,13 +38,21 @@
 
 <p>
 
-Upload datasets, analyze trends, visualize data and generate reports.
+Upload CSV files, analyze datasets, visualize trends and generate reports instantly.
 
 </p>
 
 <div class="buttons">
 
-<button class="primary">
+<input
+type="file"
+id="csvFile"
+accept=".csv"
+hidden>
+
+<button
+class="primary"
+onclick="document.getElementById('csvFile').click()">
 
 Upload Dataset
 
@@ -50,7 +60,7 @@ Upload Dataset
 
 <button class="secondary">
 
-Open Dashboard
+Dashboard
 
 </button>
 
@@ -64,7 +74,7 @@ Open Dashboard
 
 <h2>📂 Upload</h2>
 
-<p>Import CSV and Excel datasets.</p>
+<p>Upload CSV datasets.</p>
 
 </div>
 
@@ -72,7 +82,7 @@ Open Dashboard
 
 <h2>📊 Analyze</h2>
 
-<p>Generate statistics automatically.</p>
+<p>Automatic statistics.</p>
 
 </div>
 
@@ -80,7 +90,7 @@ Open Dashboard
 
 <h2>📈 Visualize</h2>
 
-<p>Create beautiful interactive charts.</p>
+<p>Interactive charts.</p>
 
 </div>
 
@@ -94,15 +104,23 @@ Open Dashboard
 
 <div class="stat">
 
-<h3>0</h3>
+<h3 id="rows">0</h3>
 
-<p>Datasets</p>
+<p>Rows</p>
 
 </div>
 
 <div class="stat">
 
-<h3>0</h3>
+<h3 id="columns">0</h3>
+
+<p>Columns</p>
+
+</div>
+
+<div class="stat">
+
+<h3 id="charts">0</h3>
 
 <p>Charts</p>
 
@@ -110,17 +128,9 @@ Open Dashboard
 
 <div class="stat">
 
-<h3>0</h3>
+<h3 id="reports">0</h3>
 
 <p>Reports</p>
-
-</div>
-
-<div class="stat">
-
-<h3>0</h3>
-
-<p>Insights</p>
 
 </div>
 
@@ -128,8 +138,6 @@ Open Dashboard
 
 </section>
 
-<script src="script.js"></script>
+<section class="preview">
 
-</body>
-
-</html>
+<h2>Dataset Preview
