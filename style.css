@@ -231,6 +231,15 @@ color:#94a3b8;
 border-top:1px solid #334155;
 }
 
+.visually-hidden{
+position:absolute;
+width:1px;
+height:1px;
+overflow:hidden;
+clip:rect(0,0,0,0);
+white-space:nowrap;
+}
+
 @media(max-width:992px){
 
 .features{
