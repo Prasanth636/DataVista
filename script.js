@@ -1,1 +1,1 @@
-console.log("Welcome to DataVista 🚀");
+console.log("DataVista Version 2.0 Loaded");
