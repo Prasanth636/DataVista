@@ -14,7 +14,9 @@
 <nav>
 
 <div class="logo">
+
 📊 DataVista
+
 </div>
 
 <ul>
@@ -34,15 +36,13 @@
 
 <p>
 
-Upload datasets, clean data, visualize trends and generate powerful business insights.
+Upload datasets, analyze trends, visualize data and generate reports.
 
 </p>
 
 <div class="buttons">
 
-<input type="file" id="csvFile" accept=".csv" hidden>
-
-<button class="primary" onclick="document.getElementById('csvFile').click()">
+<button class="primary">
 
 Upload Dataset
 
@@ -50,7 +50,7 @@ Upload Dataset
 
 <button class="secondary">
 
-Dashboard
+Open Dashboard
 
 </button>
 
@@ -64,7 +64,7 @@ Dashboard
 
 <h2>📂 Upload</h2>
 
-<p>Import CSV datasets.</p>
+<p>Import CSV and Excel datasets.</p>
 
 </div>
 
@@ -72,7 +72,7 @@ Dashboard
 
 <h2>📊 Analyze</h2>
 
-<p>Generate statistics instantly.</p>
+<p>Generate statistics automatically.</p>
 
 </div>
 
@@ -80,7 +80,7 @@ Dashboard
 
 <h2>📈 Visualize</h2>
 
-<p>Create beautiful charts.</p>
+<p>Create beautiful interactive charts.</p>
 
 </div>
 
@@ -88,29 +88,21 @@ Dashboard
 
 <section class="dashboard">
 
-<h2>Dashboard</h2>
+<h2>Dashboard Overview</h2>
 
 <div class="stats">
 
 <div class="stat">
 
-<h3 id="rows">0</h3>
+<h3>0</h3>
 
-<p>Rows</p>
-
-</div>
-
-<div class="stat">
-
-<h3 id="columns">0</h3>
-
-<p>Columns</p>
+<p>Datasets</p>
 
 </div>
 
 <div class="stat">
 
-<h3 id="charts">0</h3>
+<h3>0</h3>
 
 <p>Charts</p>
 
@@ -118,23 +110,19 @@ Dashboard
 
 <div class="stat">
 
-<h3 id="reports">0</h3>
+<h3>0</h3>
 
 <p>Reports</p>
 
 </div>
 
+<div class="stat">
+
+<h3>0</h3>
+
+<p>Insights</p>
+
 </div>
-
-</section>
-
-<section class="preview">
-
-<h2>Dataset Preview</h2>
-
-<div id="output">
-
-<p>No dataset uploaded.</p>
 
 </div>
 
@@ -143,4 +131,5 @@ Dashboard
 <script src="script.js"></script>
 
 </body>
+
 </html>
