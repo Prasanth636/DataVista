@@ -596,8 +596,10 @@ function updateAiSummary(){
   }
 
   const numeric = state.numericHeaders;
-  const salesCol = numeric.find(h => /sales|revenue|amount|total/i.test(h)) || numeric[0];
-  const profitCol = numeric.find(h => /profit|margin/i.test(h)) || numeric.find(h => h !== salesCol) || salesCol;
+  const salesCol = numeric.find(h => /sales|revenue|amount|total/i.test(h)) || detectDefaultChartColumn(numeric);
+  const profitCol = numeric.find(h => /profit|margin/i.test(h))
+    || numeric.find(h => h !== salesCol && !/(^id$|_id$|id$|row|index)/i.test(h))
+    || salesCol;
   const catCol = state.categoricalHeaders.find(h => /category|segment|region|state|type/i.test(h)) || state.categoricalHeaders[0];
 
   const salesStats = computeColumnStats(rows, salesCol);
