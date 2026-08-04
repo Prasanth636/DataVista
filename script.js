@@ -144,6 +144,15 @@ function detectLabelColumn(headers, numericHeaders, dateColumn){
   return headers[0] || '';
 }
 
+function detectDefaultChartColumn(numericHeaders){
+  if(numericHeaders.length === 0) return '';
+  // Prefer a real metric (sales/profit/amount/etc.) over an ID-like or row-index column
+  const preferred = numericHeaders.find(h => /sales|revenue|profit|amount|price|qty|quantity|total|value|score/i.test(h));
+  if(preferred) return preferred;
+  const nonId = numericHeaders.find(h => !/(^id$|_id$|id$|row|index)/i.test(h));
+  return nonId || numericHeaders[0];
+}
+
 function detectCategoricalHeaders(data, headers, numericHeaders, dateColumn){
   const candidates = headers.filter(h => !numericHeaders.includes(h) && h !== dateColumn);
   const result = [];
@@ -174,7 +183,6 @@ function handleFile(file){
   Papa.parse(file, {
     header: true,
     skipEmptyLines: true,
-    worker: true,
     complete: function(results){
       hideLoading();
 
@@ -206,7 +214,7 @@ function loadDataset(data, headers, fileName){
   state.dateColumn = detectDateHeader(data, headers, state.numericHeaders);
   state.categoricalHeaders = detectCategoricalHeaders(data, headers, state.numericHeaders, state.dateColumn);
   state.labelColumn = detectLabelColumn(headers, state.numericHeaders, state.dateColumn);
-  state.chartColumn = state.numericHeaders[0] || '';
+  state.chartColumn = detectDefaultChartColumn(state.numericHeaders);
   state.chartType = 'bar';
   document.getElementById('chartType').value = 'bar';
   state.sortColumn = null;
@@ -699,8 +707,12 @@ function downloadPdfReport(){
   showToast('PDF report downloaded.', 'success');
 }
 
-/* ---------------- Event bindings ---------------- */
-document.addEventListener('DOMContentLoaded', () => {
+/* ---------------- Event bindings ----------------
+   This script tag sits at the very end of <body>, so the DOM is
+   already parsed by the time this file runs — no need to wait for
+   DOMContentLoaded, and waiting on it is a common source of "nothing
+   happens" bugs if that event fires before this listener attaches. */
+function initApp(){
   initTheme();
 
   const csvFile = document.getElementById('csvFile');
@@ -778,4 +790,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('downloadPdfBtn').addEventListener('click', downloadPdfReport);
 
   console.log('✅ DataVista AI Loaded Successfully');
-});
+}
+
+initApp();
